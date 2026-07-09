@@ -1,0 +1,42 @@
+version: "3.9"
+
+services:
+  dynamodb-local:
+    image: amazon/dynamodb-local
+    container_name: dynamodb-local
+    ports:
+      - "8000:8000"
+    command: "-jar DynamoDBLocal.jar -sharedDb"
+    volumes:
+      - dynamodb-data:/data
+      - ./init:/docker-entrypoint-initdb.d
+    networks:
+      - analytics-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  analytics-service-toggle:
+    build: .
+    container_name: analytics-service-toggle
+    ports:
+      - "8005:8005"
+    environment:
+      AWS_ACCESS_KEY_ID: ""
+      AWS_SECRET_ACCESS_KEY: ""
+      AWS_REGION: "us-east-2"
+      AWS_SQS_URL: ""
+      AWS_DYNAMODB_TABLE: "ToggleMasterAnalytics"
+    depends_on:
+      dynamodb-local:
+        condition: service_healthy
+    networks:
+      - analytics-network
+
+volumes:
+  dynamodb-data:
+
+networks:
+  analytics-network:
