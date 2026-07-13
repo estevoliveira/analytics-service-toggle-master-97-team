@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: analytics-service
+  namespace: analytics
+  labels:
+    app: analytics-service
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: analytics-service
+
+  template:
+    metadata:
+      labels:
+        app: analytics-service
+
+    spec:
+      containers:
+        - name: analytics-service
+
+          image: 370442296150.dkr.ecr.us-east-2.amazonaws.com/analytics-service:v1
+
+          imagePullPolicy: Always
+
+          ports:
+            - containerPort: 8005
+
+          envFrom:
+            - configMapRef:
+                name: analytics-service-config
+
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+
+            limits:
+              cpu: "500m"
+              memory: "512Mi"

@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: analytics-service-config
+  namespace: analytics
+data:
+  AWS_REGION: "us-east-2"
+  AWS_DYNAMODB_TABLE: "ToggleMasterAnalytics"
+
+  # Preencher com a URL da fila SQS
+  AWS_SQS_URL: "https://sqs.us-east-2.amazonaws.com/370442296150/toggleMasterQueue"
+
+  # Como o Evaluation Service já está no cluster,
+  # utilize o Service dele.
+  EVALUATION_SERVICE_URL: "http://evaluation-service:8004"
+
+#AKIAVMQAU3NLHAO4RT7Q,44R96KgkrnNVrvC69ks9QEnF0eOokkVdT+HULRFb
+  AWS_ACCESS_KEY_ID: "AKIAVMQAU3NLHAO4RT7Q"
+  AWS_SECRET_ACCESS_KEY: "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"
